@@ -10,7 +10,9 @@ import {
   twitterActionProvider,
   // farcasterActionProvider,
   // dexscreenerActionProvider
+  alchemyTokenPricesActionProvider
 } from "@coinbase/agentkit";
+import { weatherActionProvider } from "./src/action-providers/weather/weatherActionProvider";
 import { getLangChainTools } from "@coinbase/agentkit-langchain";
 import { HumanMessage } from "@langchain/core/messages";
 import { MemorySaver } from "@langchain/langgraph";
@@ -36,6 +38,7 @@ function validateEnvironment(): void {
     "OPENAI_API_KEY",
     "CDP_API_KEY_NAME",
     "CDP_API_KEY_PRIVATE_KEY",
+    "WEATHER_API_KEY",
   ];
   requiredVars.forEach(varName => {
     if (!process.env[varName]) {
@@ -120,6 +123,11 @@ export async function initializeAgent() {
         // farcasterActionProvider(),
         // DeFi data providers
         // dexscreenerActionProvider(),
+        alchemyTokenPricesActionProvider(),
+        // Weather provider
+        weatherActionProvider({
+          apiKey: process.env.WEATHER_API_KEY || '',
+        }),
       ],
     });
 
@@ -156,7 +164,7 @@ export async function initializeAgent() {
            - Draft and post Web3-related social media content
            - Stay updated on DeFi trends and opportunities
            - Use the CDP API to interact with the crypto market
-
+           - Use the Alchemy API to get the latest token prices
         2. Social Media Management:
            - Compose and schedule tweets about Web3/crypto
            - Engage with the crypto community
